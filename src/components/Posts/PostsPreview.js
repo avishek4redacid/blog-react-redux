@@ -1,0 +1,111 @@
+//library imports
+import React from 'react';
+import { connect } from 'react-redux';
+
+//module-level-imports
+import agent from '../../agent';
+import { FETCH_COMMENTS } from '../../constants/actionTypes';
+
+//screen level imports
+import CommentSection from './CommentSection';
+
+const mapStateToProps = state => ({
+  ...state.post,
+  currentUser: state.common.currentUser,
+  comments: state.postsList.comments,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onClick: payload =>
+    dispatch({ type: FETCH_COMMENTS, payload })
+});
+
+
+class PostsPreview extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      shouldShowComments: false,
+    };
+  }
+
+  getPostAndComments = (postId) => {
+    const comments = this.props.comments;
+    let postCommentsMap = [];
+    comments && comments.length && comments.map(comment => {
+      if (comment.postId === postId) {
+        postCommentsMap.push({ postId: postId, postComment: comment })
+      }
+      return postCommentsMap;
+    })
+    return postCommentsMap;
+  }
+
+  fetchComments = (postId) => {
+    if (postId) {
+      this.props.onClick(agent.Users.getPostComments(postId))
+      this.setState({
+        shouldShowComments: true,
+      });
+    }
+  }
+
+  hideComments = (postId) => {
+    if (postId) {
+      this.setState({ shouldShowComments: !this.state.shouldShowComments });
+    }
+  }
+  render() {
+    const post = this.props.post;
+    const comments = this.props.comments;
+    const { shouldShowComments } = this.state;
+    const postCommentsMapping = this.getPostAndComments(post.id);
+    return (
+      <div className="row">
+        <div className="col-md-1" />
+        <div className="col-md-10">
+          <div className="article-preview text-center">
+            <div className="article-meta">
+              <div className="info">
+                <h5>Title - {post.title || ''}</h5>
+                <p><strong>Content -</strong> {post.body || ''}</p>
+              </div>
+            </div>
+            <span>
+              <button
+                type="button"
+                onClick={(e) => this.fetchComments(post.id)}
+                className="btn btn-outline-secondary btn-sm">
+                View Comments
+        </button>
+            </span>
+            {shouldShowComments && <span className="ml-5"><button
+              type="button"
+              onClick={(e) => this.hideComments(post.id)}
+              className="btn btn-outline-secondary btn-sm">
+              Hide Comments
+            </button></span>}
+            <div>
+              {shouldShowComments &&
+                comments && comments.length &&
+                comments.map(comment => {
+                  if (comment.postId === post.id) {
+                    return (
+                      <div>
+                        <CommentSection
+                          comment={comment}
+                        />
+                      </div>
+                    )
+                  }
+                })
+              }
+            </div>
+          </div>
+        </div>
+      </div >
+    );
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostsPreview);
