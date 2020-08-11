@@ -1,7 +1,7 @@
 //library imports
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { push } from 'react-router-redux';
 
 //module level imports
@@ -50,6 +50,15 @@ class App extends React.Component {
             appName={this.props.appName}
             currentUser={this.props.currentUser} />
           <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => {
+                return (
+                  <Redirect to="/users" />
+                )
+              }}
+            />
             <Route exact path="/users" component={Home} />
             <Route path="/users/:id/posts" component={Posts} />
             <Route path="/users/:id" component={User} />
