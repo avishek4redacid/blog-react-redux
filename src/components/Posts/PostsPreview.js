@@ -55,10 +55,22 @@ class PostsPreview extends React.Component {
       this.setState({ shouldShowComments: !this.state.shouldShowComments });
     }
   }
+
+  getPostIdFromComments = () => {
+    const { comments } = this.props;
+    let postId = '';
+    comments && comments.length &&
+      comments.forEach(comment => {
+        postId = comment.postId;
+      })
+    return postId;
+  }
+
   render() {
-    const post = this.props.post;
-    const comments = this.props.comments;
+    const { post, comments } = this.props;
     const { shouldShowComments } = this.state;
+    const postIdFromComments = this.getPostIdFromComments();
+    console.log(postIdFromComments, "postIdFromComments")
     return (
       <div className="row">
         <div className="col-md-1" />
@@ -78,7 +90,7 @@ class PostsPreview extends React.Component {
                 View Comments
         </button>
             </span>
-            {shouldShowComments && <span className="ml-5"><button
+            {shouldShowComments && (postIdFromComments === post.id) && <span className="ml-5"><button
               type="button"
               onClick={(e) => this.hideComments(post.id)}
               className="btn btn-outline-secondary btn-sm">
