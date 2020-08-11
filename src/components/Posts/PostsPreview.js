@@ -59,7 +59,6 @@ class PostsPreview extends React.Component {
     const post = this.props.post;
     const comments = this.props.comments;
     const { shouldShowComments } = this.state;
-    const postCommentsMapping = this.getPostAndComments(post.id);
     return (
       <div className="row">
         <div className="col-md-1" />
@@ -89,8 +88,9 @@ class PostsPreview extends React.Component {
               {shouldShowComments &&
                 comments && comments.length &&
                 comments.map(comment => {
+                  let commentsList = [];
                   if (comment.postId === post.id) {
-                    return (
+                    commentsList = (
                       <div>
                         <CommentSection
                           comment={comment}
@@ -98,6 +98,7 @@ class PostsPreview extends React.Component {
                       </div>
                     )
                   }
+                  return commentsList;
                 })
               }
             </div>

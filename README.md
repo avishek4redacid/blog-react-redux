@@ -1,6 +1,6 @@
 ## Getting started
 
-You can view a live demo over at `https://sv8m5.csb.app/users`
+You can view a live demo over at `https://zp3xf.csb.app/users`
 
 To get the frontend running locally:
 
